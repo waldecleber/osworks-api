@@ -29,13 +29,12 @@ public class ClienteService {
 		this.mapper = mapper;
 	}
 
-	public Cliente salvar(Cliente cliente) {
+	public ClienteDTO salvar(Cliente cliente) {
 		Optional<Cliente> optional = clienteRepository.findByCpf(cliente.getCpf());
-		if (Objects.nonNull(optional)) {
-			throw new ClienteDuplicadoException("Já existe um Cliente com este CPF");
-			
+		if (optional.isPresent()) {
+			throw new ClienteDuplicadoException("Já existe um Cliente com este CPF");			
 		}
-		return clienteRepository.save(cliente);
+		return mapper.map(clienteRepository.save(cliente), ClienteDTO.class);
 	}
 	
 	public List<ClienteDTO> listarClientes() {

@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.modelmapper.ModelMapper;
 
+import com.waldecleber.osworks.dto.ClienteDTO;
 import com.waldecleber.osworks.exception.ClienteDuplicadoException;
 import com.waldecleber.osworks.model.Cliente;
 import com.waldecleber.osworks.repository.ClienteRepository;
@@ -43,11 +44,19 @@ public class ClientesServiceTest {
 				.email("cliente@teste.com")
 				.cpf("17482812164")
 				.build();
+		
+		ClienteDTO result = ClienteDTO.builder()
+				.nome("Cliente 01")
+				.telefone("9999-0000")
+				.email("cliente@teste.com")
+				.cpf("17482812164")
+				.build();
 				
 		//action
 		when(clienteRepository.save(cliente)).thenReturn(cliente);
-		when(clienteRepository.findByCpf(any())).thenReturn(null);
-		Cliente result = clienteService.salvar(cliente);
+		when(clienteRepository.findByCpf(any())).thenReturn(Optional.ofNullable(null));
+		when(mapper.map(cliente, ClienteDTO.class)).thenReturn(result);
+		result = clienteService.salvar(cliente);
 		
 		//assert
 		error.checkThat(result.getNome(), is(equalTo(cliente.getNome())));
