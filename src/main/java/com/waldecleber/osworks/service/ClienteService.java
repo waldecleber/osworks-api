@@ -1,12 +1,12 @@
 package com.waldecleber.osworks.service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.waldecleber.osworks.dto.ClienteDTO;
@@ -53,6 +53,16 @@ public class ClienteService {
 		return clienteRepository.findByCpf(cpf)
 				.map(cliente -> mapper.map(cliente, ClienteDTO.class))
 				.orElseThrow(() -> new ClienteNaoEncontrado("Cliente não encontrado"));
+	}
+
+	public ClienteDTO atualizar(Long id, ClienteDTO dto) {
+		if (clienteRepository.existsById(id)) {
+			Cliente cliente = mapper.map(dto, Cliente.class);
+			cliente.setId(id);
+			return mapper.map(clienteRepository.save(cliente), ClienteDTO.class);
+		} else {
+			throw new ClienteNaoEncontrado("Cliente não encontrado");			
+		}
 	}
 
 }
