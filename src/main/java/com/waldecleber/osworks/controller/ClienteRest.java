@@ -43,8 +43,8 @@ public class ClienteRest {
 	
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ClienteDTO salvar(@RequestBody Cliente cliente) {		
-		return clienteService.salvar(cliente);
+	public ClienteDTO salvar(@RequestBody ClienteDTO dto) {
+		return clienteService.salvar(dto);
 	}
 	
 	@PutMapping("/{id}")

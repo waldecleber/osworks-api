@@ -45,36 +45,45 @@ public class ClientesServiceTest {
 				.cpf("17482812164")
 				.build();
 		
-		ClienteDTO result = ClienteDTO.builder()
+		ClienteDTO dto =
+				ClienteDTO.builder()
 				.nome("Cliente 01")
 				.telefone("9999-0000")
 				.email("cliente@teste.com")
 				.cpf("17482812164")
 				.build();
-				
-		//action
+
 		when(clienteRepository.save(cliente)).thenReturn(cliente);
 		when(clienteRepository.findByCpf(any())).thenReturn(Optional.ofNullable(null));
-		when(mapper.map(cliente, ClienteDTO.class)).thenReturn(result);
-		result = clienteService.salvar(cliente);
+		when(mapper.map(cliente, ClienteDTO.class)).thenReturn(dto);
+
+		//action
+		clienteService.salvar(dto);
 		
 		//assert
-		error.checkThat(result.getNome(), is(equalTo(cliente.getNome())));
+		error.checkThat(dto.getNome(), is(equalTo(cliente.getNome())));
 	}
 	
 	@Test(expected = ClienteDuplicadoException.class)
 	public void naoDeveSalvarClienteDuplicado() {
-		Cliente cliente1 = Cliente.builder()
+		Cliente cliente = Cliente.builder()
 				.nome("Cliente 01")
 				.telefone("9999-0000")
 				.email("cliente@teste.com")
 				.cpf("17482812164")
 				.build();
+
+		ClienteDTO dto = ClienteDTO.builder()
+						.nome("Cliente 01")
+						.telefone("9999-0000")
+						.email("cliente@teste.com")
+						.cpf("17482812164")
+						.build();
 		
-		when(clienteRepository.findByCpf("17482812164")).thenReturn(Optional.of(cliente1));		
-		when(clienteRepository.save(cliente1)).thenReturn(cliente1);
+		when(clienteRepository.findByCpf("17482812164")).thenReturn(Optional.of(cliente));
+		when(clienteRepository.save(cliente)).thenReturn(cliente);
 		
-		clienteService.salvar(cliente1);			
+		clienteService.salvar(dto);
 				
 	}
 
